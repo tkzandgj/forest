@@ -26,6 +26,11 @@ public class MetricInterceptor extends AbstractInvokerInterceptor {
     private final static Map<String, Metric> metricsMap = Maps.newConcurrentMap();
     private final static String BEG_TIME = "begTime";
 
+    /**
+     * scheduleAtFixedRate  是以上一个任务开始的时间计时，period时间过去后，检测上一个任务是否执行完毕，
+     * 如果上一个任务执行完毕，则当前任务立即执行，
+     * 如果上一个任务没有执行完毕，则需要等上一个任务执行完毕后立即执行。
+     */
     final static ScheduledFuture<?> scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
         @Override
         public void run() {
