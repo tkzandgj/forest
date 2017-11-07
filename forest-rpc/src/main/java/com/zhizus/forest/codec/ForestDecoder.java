@@ -19,12 +19,22 @@ public class ForestDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+        /**
+         * 规定Header_size的大小
+         */
         if (byteBuf.readableBytes() < Constants.HEADER_SIZE) {
             return;
         }
+        /**
+         * 标记readerIndex的位置
+         */
         byteBuf.markReaderIndex();
+
         short magic = byteBuf.readShort();
         if (magic != Constants.MAGIC) {
+            /**
+             * 恢复readerIndex的位置
+             */
             byteBuf.resetReaderIndex();
             throw new ForestFrameworkException("ForestDecoder transport header not support, type: " + magic);
         }
@@ -40,6 +50,9 @@ public class ForestDecoder extends ByteToMessageDecoder {
             }
             // TODO 限制最大包长
             byte[] payload = new byte[size];
+            /**
+             * 将ByteBuf中的内容读取到payload字节数组中
+             */
             byteBuf.readBytes(payload);
             Serialization serialization = SerializeType.getSerializationByExtend(extend);
             Compress compress = CompressType.getCompressTypeByValueByExtend(extend);
